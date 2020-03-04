@@ -106,7 +106,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4059157056928284}
-  - component: {fileID: 9059078701637374964}
   - component: {fileID: 5952602487645917435}
   - component: {fileID: 564528198884754600}
   m_Layer: 0
@@ -133,19 +132,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9059078701637374964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1005656507454012}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32fb44524877a459391b83eb27a4b5d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 0.002
 --- !u!114 &5952602487645917435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -527,7 +513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a4d344eff3c544baa481c1be7210866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DoorDirection: 0
+  DoorDirection: 1
   DoorState: 3
 --- !u!114 &3312029752654138296
 MonoBehaviour:
@@ -649,7 +635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a4d344eff3c544baa481c1be7210866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DoorDirection: 1
+  DoorDirection: 0
   DoorState: 3
 --- !u!114 &6606720637452409073
 MonoBehaviour:
@@ -895,7 +881,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a4d344eff3c544baa481c1be7210866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DoorDirection: 1
+  DoorDirection: 0
   DoorState: 3
 --- !u!114 &1222045417379017424
 MonoBehaviour:
@@ -1454,7 +1440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a4d344eff3c544baa481c1be7210866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DoorDirection: 0
+  DoorDirection: 1
   DoorState: 3
 --- !u!114 &2088011335199773953
 MonoBehaviour:
