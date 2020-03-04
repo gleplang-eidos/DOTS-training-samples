@@ -8,13 +8,16 @@ using Unity.Collections.LowLevel.Unsafe;
 [RequiresEntityConversion]
 public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
 {
+    [SerializeField]
+    float Speed = 0.002f;
+
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         // Get all the children
         var children = gameObject.GetComponentsInChildren<WagonMonoTag>();
 
         // Create the shared component
-        var train = new TrainComponent { Wagons = new UnsafeList<Entity> (children.Length, Unity.Collections.Allocator.Persistent), Speed = 0.002f };
+        var train = new TrainComponent { Wagons = new UnsafeList<Entity> (children.Length, Unity.Collections.Allocator.Persistent), Speed = Speed };
 
         // Fill the list of wagon as well as assigning the shared component to every wagon.
         //foreach (var childTransform in children)
