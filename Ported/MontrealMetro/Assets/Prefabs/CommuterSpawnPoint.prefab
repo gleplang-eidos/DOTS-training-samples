@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1123380649314129582}
   - component: {fileID: 1557241224911751000}
-  - component: {fileID: 1094539765021028019}
+  - component: {fileID: 1171597067771990257}
   m_Layer: 0
   m_Name: CommuterSpawnPoint
   m_TagString: Untagged
@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 168394731888295792}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.489771, y: -2.4497123, z: -5.7746773}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
---- !u!114 &1094539765021028019
+--- !u!114 &1171597067771990257
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -54,6 +54,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 168394731888295792}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95d57ceb4b31a4541b090fce812e0d92, type: 3}
+  m_Script: {fileID: 11500000, guid: 10221346290114a8c81a79175299a4c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CommuterPrefab: {fileID: 1598512793004306, guid: 1b7c16b60bc3a4b37b5a2f18f064dcb4,
+    type: 3}
