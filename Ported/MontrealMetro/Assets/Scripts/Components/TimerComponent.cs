@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-public struct NewBehaviourScript : IComponentData
+public struct TimerComponent : IComponentData
 {
     public float Time;
 }
