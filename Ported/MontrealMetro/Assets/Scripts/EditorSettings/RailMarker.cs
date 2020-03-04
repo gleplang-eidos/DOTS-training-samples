@@ -24,7 +24,7 @@ public class RailMarker : MonoBehaviour
 	}
 	public void OnDrawGizmos()
 	{
-		Gizmos.color = GUI.color = (railMarkerType != RailMarkerType.PLATFORM_START) ?  GetLineColor(LineColor) : Color.white;
+		Gizmos.color = GUI.color = (railMarkerType != RailMarkerType.PLATFORM_START) ?  ColorHelper.GetColorByLineColor(LineColor) : Color.white;
 		
 		// Draw marker X
 		float xSize = 0.5f;
@@ -51,21 +51,4 @@ public class RailMarker : MonoBehaviour
 		}
 		return result;
 	}
-
-    Color GetLineColor(LineColor lineColor)
-    {
-        switch(lineColor)
-        {
-			case LineColor.Blue:
-				return Color.blue;
-			case LineColor.Green:
-				return Color.green;
-			case LineColor.Orange:
-				return new Color(1, 0.5f, 0);
-			case LineColor.Yellow:
-				return Color.yellow;
-			default:
-				return Color.magenta;
-		}
-    }
 }
