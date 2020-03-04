@@ -106,6 +106,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4059157056928284}
+  - component: {fileID: 9059078701637374964}
+  - component: {fileID: 5952602487645917435}
+  - component: {fileID: 564528198884754600}
   m_Layer: 0
   m_Name: Wagon
   m_TagString: Untagged
@@ -130,6 +133,44 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9059078701637374964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1005656507454012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32fb44524877a459391b83eb27a4b5d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 0.002
+--- !u!114 &5952602487645917435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1005656507454012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 0
+--- !u!114 &564528198884754600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1005656507454012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd85d795107eb4efe8771c1f627ecf24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1074676382496112
 GameObject:
   m_ObjectHideFlags: 0
