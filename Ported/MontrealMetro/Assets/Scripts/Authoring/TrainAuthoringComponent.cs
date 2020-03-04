@@ -3,11 +3,15 @@ using Unity.Mathematics;
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.Transforms;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
 public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
 {
+    [SerializeField]
+    GameObject Destination = null;
+
     [SerializeField]
     float Speed = 0.002f;
 
@@ -32,9 +36,19 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
             train.Wagons.Add(conversionSystem.GetPrimaryEntity(childTransform.gameObject));
         }
 
+        var destinationEntity = conversionSystem.GetPrimaryEntity(Destination);
+
         foreach (var childTransform in children)
         {
-            dstManager.AddSharedComponentData(conversionSystem.GetPrimaryEntity(childTransform.gameObject), train);
+            var wagonEntity = conversionSystem.GetPrimaryEntity(childTransform.gameObject);
+            dstManager.AddSharedComponentData(wagonEntity, train);
+            dstManager.AddComponentData(wagonEntity, new DestinationComponent { Target = destinationEntity });
+            dstManager.RemoveComponent<LocalToParent>(wagonEntity);
+            dstManager.RemoveComponent<Parent>(wagonEntity);
+            dstManager.SetComponentData(wagonEntity, new Translation { Value = childTransform.transform.position });
+            dstManager.SetComponentData(wagonEntity, new Rotation { Value = childTransform.transform.rotation });
         }
+
+        dstManager.DestroyEntity(entity);
     }
 }
