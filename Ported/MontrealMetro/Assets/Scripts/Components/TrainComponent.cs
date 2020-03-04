@@ -7,5 +7,6 @@ using Unity.Mathematics;
 [Serializable]
 public struct TrainComponent : ISharedComponentData
 {
-    public UnsafeList<Entity> Wagons;   
+    public UnsafeList<Entity> Wagons;
+    public float Speed;
 }

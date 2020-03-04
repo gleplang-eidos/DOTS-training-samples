@@ -14,7 +14,7 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         var children = gameObject.GetComponentsInChildren<WagonMonoTag>();
 
         // Create the shared component
-        var train = new TrainComponent { Wagons = new UnsafeList<Entity> (children.Length, Unity.Collections.Allocator.Persistent) };
+        var train = new TrainComponent { Wagons = new UnsafeList<Entity> (children.Length, Unity.Collections.Allocator.Persistent), Speed = 0.002f };
 
         // Fill the list of wagon as well as assigning the shared component to every wagon.
         //foreach (var childTransform in children)
