@@ -5,6 +5,7 @@ using Unity.Entities;
 public struct CommuterSpawnPointComponent : IComponentData
 {
     public Entity CommuterPrefab;
+    public Entity Platform;
 } 
 
 
