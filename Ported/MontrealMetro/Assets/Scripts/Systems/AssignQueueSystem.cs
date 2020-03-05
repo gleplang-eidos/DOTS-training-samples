@@ -14,7 +14,7 @@ public class AssignQueueSystem : JobComponentSystem
         {
             var queues = EntityManager.GetBuffer<QueueBufferElementData>(commuter.PlatformEntity);
             EntityManager.AddComponentData<CommuterQueueComponent>(e, new CommuterQueueComponent { Queue = queues[random.NextInt(0, queues.Length)].entity });
-            EntityManager.AddComponent<InQueueTag>(e);
+            EntityManager.RemoveComponent<UnassignedCommuterTag>(e);
 
         }).Run();   
         

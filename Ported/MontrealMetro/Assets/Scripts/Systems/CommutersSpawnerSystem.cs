@@ -11,7 +11,15 @@ public class CommutersSpawnerSystem : JobComponentSystem
         {
             var commuter = EntityManager.Instantiate(commuterSpawnerComponent.CommuterPrefab);
             EntityManager.SetComponentData(commuter, new Translation { Value = localToWorld.Position });
+            EntityManager.AddComponentData(commuter, new CommuterComponent
+            {
+                isAtTargetPosition = true,
+                targetPosition = localToWorld.Position,
+                speed = 2,
+            });
+
             EntityManager.AddComponentData(commuter, new CommuterPlatformComponent { PlatformEntity = commuterSpawnerComponent.Platform });
+            EntityManager.AddComponentData(commuter, new UnassignedCommuterTag { });
 
             EntityManager.DestroyEntity(e);
         }).Run();
