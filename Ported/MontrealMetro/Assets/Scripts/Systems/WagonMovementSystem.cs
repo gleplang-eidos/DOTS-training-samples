@@ -26,6 +26,7 @@ public class WagonMovementSystem : JobComponentSystem
             .WithReadOnly(localToWorlds)
             .WithReadOnly(localToParents)
             .WithoutBurst()
+            .WithNone<DockedTag>()
             .ForEach((Entity entity, TrainComponent train, ref Translation translation,
             ref Rotation rotation,  ref DestinationComponent destination) =>
         {

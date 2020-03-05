@@ -17,7 +17,7 @@ public class LineAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         for (int i = 0; i < railMarkers.Length; i++)
         {
             var waypointEntity = conversionSystem.GetPrimaryEntity(railMarkers[i]);
-            dstManager.AddComponentData(waypointEntity, new LineWaypointComponent() { LineID = m_LineColor, Index = i });
+            dstManager.AddComponentData(waypointEntity, new LineWaypointComponent() { LineID = m_LineColor, Index = i, Type = railMarkers[i].railMarkerType });
             waypointList.Add(waypointEntity);
         }
 
