@@ -3,7 +3,9 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 public class WagonMovementSystem : JobComponentSystem
 {
     EntityQuery m_BlueLineQuery;
@@ -15,16 +17,68 @@ public class WagonMovementSystem : JobComponentSystem
     {
         base.OnCreate();
 
-        m_BlueLineQuery = GetEntityQuery(typeof(RailComponent), typeof(BlueLineTag));
-        m_GreenLineQuery = GetEntityQuery(typeof(RailComponent), typeof(GreenLineTag));
-        m_OrangeLineQuery = GetEntityQuery(typeof(RailComponent), typeof(OrangeLineTag));
-        m_YellowLineQuery = GetEntityQuery(typeof(RailComponent), typeof(YellowLineTag));
+        m_BlueLineQuery = GetEntityQuery(new EntityQueryDesc
+        {
+            All = new[]
+            {
+                ComponentType.ReadOnly<RailComponent>(), ComponentType.ReadOnly<BlueLineTag>()
+            }
+            ,
+            None = new[]
+            {
+                ComponentType.ReadOnly<RailSpawnComponent>()
+            }
+        });
+
+        m_GreenLineQuery = GetEntityQuery(new EntityQueryDesc
+        {
+            All = new[]
+           {
+                ComponentType.ReadOnly<RailComponent>(), ComponentType.ReadOnly<GreenLineTag>()
+            }
+           ,
+            None = new[]
+           {
+                ComponentType.ReadOnly<RailSpawnComponent>()
+            }
+        });
+
+        m_OrangeLineQuery = GetEntityQuery(new EntityQueryDesc
+        {
+            All = new[]
+           {
+                ComponentType.ReadOnly<RailComponent>(), ComponentType.ReadOnly<OrangeLineTag>()
+            }
+           ,
+            None = new[]
+           {
+                ComponentType.ReadOnly<RailSpawnComponent>()
+            }
+        });
+
+        m_YellowLineQuery = GetEntityQuery(new EntityQueryDesc
+        {
+            All = new[]
+           {
+                ComponentType.ReadOnly<RailComponent>(), ComponentType.ReadOnly<YellowLineTag>()
+            }
+           ,
+            None = new[]
+           {
+                ComponentType.ReadOnly<RailSpawnComponent>()
+            }
+        });
     }
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        var localToWorlds = GetComponentDataFromEntity<LocalToWorld>(true);
+        if(m_GreenLineQuery.CalculateEntityCount() == 0)
+        {
+            return default;
+        }
 
+        var localToWorlds = GetComponentDataFromEntity<LocalToWorld>(true);
+        
         Entities
             .WithReadOnly(localToWorlds)
             .WithoutBurst()
@@ -36,32 +90,42 @@ public class WagonMovementSystem : JobComponentSystem
             {
                 if (EntityManager.HasComponent(destination.Target, typeof(BlueLineTag)))
                 {
-                    Continue(entity, destination, localToWorlds, train, translation, rotation, m_BlueLineQuery);
+                    FindNextDestination(entity, ref destination, localToWorlds, train, ref translation, ref rotation, m_BlueLineQuery);
                 }
                 else if (EntityManager.HasComponent(destination.Target, typeof(GreenLineTag)))
                 {
-                    Continue(entity, destination, localToWorlds, train, translation, rotation, m_GreenLineQuery);
+                    FindNextDestination(entity, ref destination, localToWorlds, train, ref translation, ref rotation, m_GreenLineQuery);
                 }
                 else if (EntityManager.HasComponent(destination.Target, typeof(OrangeLineTag)))
                 {
-                    Continue(entity, destination, localToWorlds, train, translation, rotation, m_OrangeLineQuery);
+                    FindNextDestination(entity, ref destination, localToWorlds, train, ref translation, ref rotation, m_OrangeLineQuery);
                 }
                 else if (EntityManager.HasComponent(destination.Target, typeof(YellowLineTag)))
                 {
-                    Continue(entity, destination, localToWorlds, train, translation, rotation, m_YellowLineQuery);
+                    FindNextDestination(entity, ref destination, localToWorlds, train, ref translation, ref rotation, m_YellowLineQuery);
                 }
+            }
+            else
+            {
+                var railEntities = m_GreenLineQuery.ToEntityArray(Allocator.TempJob);
+
+                destination.Target = railEntities[0];
+
+                railEntities.Dispose();
+
+                FindNextDestination(entity, ref destination, localToWorlds, train, ref translation, ref rotation, m_GreenLineQuery);
             }
         }).Run();
 
         return inputDeps;
     }
 
-    void Continue(Entity entity,
-        DestinationComponent destination,
+    void FindNextDestination(Entity entity,
+        ref DestinationComponent destination,
         ComponentDataFromEntity<LocalToWorld> localToWorlds,
         TrainComponent train,
-        Translation translation,
-        Rotation rotation,
+        ref Translation translation,
+        ref Rotation rotation,
         EntityQuery query)
     {
         float3 destinationPosition = EntityManager.GetComponentData<LocalToWorld>(destination.Target).Position;
@@ -76,23 +140,18 @@ public class WagonMovementSystem : JobComponentSystem
 
             var destRailComponent = EntityManager.GetComponentData<RailComponent>(destination.Target);
 
-            var matchIndex = 0;
-
-            if(destRailComponent.RailID == railEntities.Length - 1)
-            {
-                matchIndex = 0;
-            }
-            else
-            {
-                matchIndex = destRailComponent.RailID + 1;
-            }
+            var matchIndex = destRailComponent.RailID == railEntities.Length - 1 ? 0 : destRailComponent.RailID + 1;
 
             for (int i = 0, length = railEntities.Length; i < length; ++i)
             {
                 var railComponent = EntityManager.GetComponentData<RailComponent>(railEntities[i]);
+
                 if (railComponent.RailID == matchIndex)
                 {
                     destination.Target = railEntities[i];
+
+                    EntityManager.SetComponentData(entity, destination);
+
                     break;
                 }
             }

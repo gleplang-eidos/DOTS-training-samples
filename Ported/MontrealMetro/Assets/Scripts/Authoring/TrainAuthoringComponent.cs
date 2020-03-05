@@ -1,7 +1,5 @@
 ﻿using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
-using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Transforms;
 
@@ -23,8 +21,12 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         var railMarker = Destination != null ? Destination.GetComponent<RailMarker>() : null;
 
         // Create the shared component
-        var train = new TrainComponent { Wagons = new UnsafeList<Entity> (children.Length, Unity.Collections.Allocator.Persistent), Speed = Speed };
-        train.LineColor = railMarker != null ? railMarker.LineColor : LineColor.Blue;
+        var train = new TrainComponent
+        {
+            Wagons = new UnsafeList<Entity> (children.Length, Unity.Collections.Allocator.Persistent),
+            Speed = Speed,
+            LineColor = railMarker != null ? railMarker.LineColor : LineColor.Blue
+        };
 
         // Fill the list of wagon as well as assigning the shared component to every wagon.
         //foreach (var childTransform in children)
@@ -45,7 +47,7 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         {
             var wagonEntity = conversionSystem.GetPrimaryEntity(childTransform.gameObject);
             dstManager.AddSharedComponentData(wagonEntity, train);
-            dstManager.AddComponentData(wagonEntity, new DestinationComponent { Target = destinationEntity });
+            dstManager.AddComponentData(wagonEntity, new DestinationComponent { /*Target = destinationEntity*/ });
             dstManager.RemoveComponent<LocalToParent>(wagonEntity);
             dstManager.RemoveComponent<Parent>(wagonEntity);
             dstManager.SetComponentData(wagonEntity, new Translation { Value = childTransform.transform.position });
