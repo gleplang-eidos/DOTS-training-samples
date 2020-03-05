@@ -30,30 +30,33 @@ public class WagonMovementSystem : JobComponentSystem
             .ForEach((Entity entity, TrainComponent train, ref Translation translation,
             ref Rotation rotation,  ref DestinationComponent destination) =>
         {
-            var destinationPosition = localToWorlds[destination.Target].Position;
-            var direction = math.normalize(destinationPosition - localToWorlds[entity].Position);
-            translation.Value += direction * train.Speed;
-            rotation.Value = quaternion.LookRotation(direction, new float3(0,1,0));
-
-            if (math.lengthsq(localToWorlds[entity].Position - destinationPosition) < 1f)
+            if (destination.Target != Entity.Null)
             {
-                var oldWaypoint = lineWaypoints[destination.Target];
-                // Find to which line the old way point belonged
-                LineComponent line = lines[0];
-                for (int i = 0; i < lines.Length; i++)
+                var destinationPosition = localToWorlds[destination.Target].Position;
+                var direction = math.normalize(destinationPosition - localToWorlds[entity].Position);
+                translation.Value += direction * train.Speed;
+                rotation.Value = quaternion.LookRotation(direction, new float3(0, 1, 0));
+
+                if (math.lengthsq(localToWorlds[entity].Position - destinationPosition) < 1f)
                 {
-                    if (oldWaypoint.LineID == lines[i].LineID)
+                    var oldWaypoint = lineWaypoints[destination.Target];
+                    // Find to which line the old way point belonged
+                    LineComponent line = lines[0];
+                    for (int i = 0; i < lines.Length; i++)
                     {
-                        line = lines[i];
+                        if (oldWaypoint.LineID == lines[i].LineID)
+                        {
+                            line = lines[i];
+                        }
                     }
-                }
 
-                unsafe
-                {
-                    var newWaypointIndex = oldWaypoint.Index == (line.Waypoints.Length - 1) ? 0 : oldWaypoint.Index + 1;
-                    destination.Target = line.Waypoints.Ptr[newWaypointIndex];
-                }
+                    unsafe
+                    {
+                        var newWaypointIndex = oldWaypoint.Index == (line.Waypoints.Length - 1) ? 0 : oldWaypoint.Index + 1;
+                        destination.Target = line.Waypoints.Ptr[newWaypointIndex];
+                    }
 
+                }
             }
         }
         ).Run();
