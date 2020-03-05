@@ -17,24 +17,34 @@ public class DockSystem : JobComponentSystem
         Entities.
             WithReadOnly(localToWorlds).
             WithReadOnly(lineWaypointComponents).
-            WithNativeDisableParallelForRestriction(doorPanels).
             WithStructuralChanges().
             WithoutBurst().
             WithNone<DockedTag>().
             ForEach((Entity e, TrainComponent train, in DestinationComponent destination, in LocalToWorld localToWorld) =>
             {
+                
                 bool destinationIsPlatformStart = false;
                 if (lineWaypointComponents.HasComponent(destination.Target))
                 {
                     destinationIsPlatformStart = lineWaypointComponents[destination.Target].Type == RailMarkerType.PLATFORM_START;
                 }
 
-                if (destinationIsPlatformStart)
-                    Debug.Log(math.length(localToWorlds[destination.Target].Position - localToWorld.Position));
-
                 // If close enough to a dock entry, stop every wagon by adding the docked tag.
                 if (destinationIsPlatformStart && math.abs(math.length(localToWorlds[destination.Target].Position - localToWorld.Position)) <= 1)
                 {
+                    // Move this for loop at the end of the scope to raise the exception.
+                    //Open doors
+                    for (var i = 0; i < train.Doors.Length; ++i)
+                    {
+                        var door = train.Doors[i];
+                        if (doorPanels.HasComponent(door))
+                        {
+                            var doorPanelComponent = doorPanels[door];
+                            doorPanelComponent.DoorState = DoorState.Opening;
+                            doorPanels[door] = doorPanelComponent;
+                        }
+                    }
+
                     for (var i = 0; i < train.Wagons.Length; ++i)
                     {
                         unsafe
@@ -43,15 +53,6 @@ public class DockSystem : JobComponentSystem
 
                             // Dock wagons
                             EntityManager.AddComponent<DockedTag>(wagon);
-
-                            // Open doors
-                            if (doorPanels.HasComponent(wagon))
-                            {
-                                //var doorPanelComponent = doorPanels[wagon];
-                                //doorPanelComponent.DoorState = DoorState.Opening;
-                                //doorPanels[wagon] = doorPanelComponent;
-                            }
-
                         }
                     }
                 }

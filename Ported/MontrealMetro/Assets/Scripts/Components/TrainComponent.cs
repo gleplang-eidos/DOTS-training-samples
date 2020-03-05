@@ -8,5 +8,7 @@ using Unity.Mathematics;
 public struct TrainComponent : ISharedComponentData
 {
     public UnsafeList<Entity> Wagons;
+    public FixedList512<Entity> Doors;
+
     public float Speed;
 }
