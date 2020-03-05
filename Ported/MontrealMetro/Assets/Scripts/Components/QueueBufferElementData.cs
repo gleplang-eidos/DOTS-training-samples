@@ -2,7 +2,7 @@
 using Unity.Entities;
 
 [Serializable]
-public struct EntityBufferElementData : IBufferElementData
+public struct QueueBufferElementData : IBufferElementData
 {
     public Entity entity;
 }

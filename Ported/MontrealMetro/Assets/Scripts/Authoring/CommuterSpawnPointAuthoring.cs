@@ -8,15 +8,18 @@ using System.Collections.Generic;
 public class CommuterSpawnPointAuthoring : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     public GameObject CommuterPrefab;
+    public GameObject Platform;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        Entity prefab = conversionSystem.GetPrimaryEntity(CommuterPrefab);
-        dstManager.AddComponentData(entity, new CommuterSpawnPointComponent { CommuterPrefab = prefab });
+        Entity commuterPrefab = conversionSystem.GetPrimaryEntity(CommuterPrefab);
+        Entity platform = conversionSystem.GetPrimaryEntity(Platform);
+        dstManager.AddComponentData(entity, new CommuterSpawnPointComponent { CommuterPrefab = commuterPrefab, Platform = platform });
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
         referencedPrefabs.Add(CommuterPrefab);
+        referencedPrefabs.Add(Platform);
     }
 }
