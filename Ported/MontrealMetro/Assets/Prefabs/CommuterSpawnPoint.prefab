@@ -59,3 +59,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CommuterPrefab: {fileID: 1598512793004306, guid: 1b7c16b60bc3a4b37b5a2f18f064dcb4,
     type: 3}
+  Platform: {fileID: 0}
+  nbCommutersToSpawn: 25

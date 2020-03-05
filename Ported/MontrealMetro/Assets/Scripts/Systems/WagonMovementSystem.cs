@@ -25,12 +25,6 @@ public class WagonMovementSystem : JobComponentSystem
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         var localToWorlds = GetComponentDataFromEntity<LocalToWorld>(true);
-        //var localToParents = GetComponentDataFromEntity<LocalToParent>(true);
-        /*var lineWaypoints = GetComponentDataFromEntity<LineWaypointComponent>(true);
-        var lines = lineQuery.ToComponentDataArray<LineComponent>(Unity.Collections.Allocator.TempJob);*/
-
-        //var lineWaypoints = GetComponentDataFromEntity<LineWaypointComponent>(true);
-        //var lines = m_LineQuery.ToComponentDataArray<LineComponent>(Unity.Collections.Allocator.TempJob);
 
         var blueEntities = m_BlueLineQuery.ToEntityArray(Allocator.TempJob);
         var greenEntities = m_GreenLineQuery.ToEntityArray(Allocator.TempJob);
@@ -38,9 +32,7 @@ public class WagonMovementSystem : JobComponentSystem
         var yellowEntities = m_YellowLineQuery.ToEntityArray(Allocator.TempJob);
 
         Entities
-            //.WithReadOnly(lineWaypoints)
             .WithReadOnly(localToWorlds)
-            //.WithReadOnly(localToParents)
             .WithoutBurst()
             .WithNone<DockedTag>()
             .ForEach((Entity entity, TrainComponent train, ref Translation translation,
@@ -48,23 +40,42 @@ public class WagonMovementSystem : JobComponentSystem
         {
             if (destination.Target != Entity.Null)
             {
-                if(EntityManager.HasComponent(destination.Target, typeof(BlueLineTag)))
-                {
+                Entity destinationEntity;
 
+                float3 destinationPosition = new float3();
+
+                if (EntityManager.HasComponent(destination.Target, typeof(BlueLineTag)))
+                {
+                    destinationEntity = destination.Target;
+                    destinationPosition = EntityManager.GetComponentData<LocalToWorld>(destinationEntity).Position;
+
+                    //destinationPosition = GetPositionBy(m_BlueLineQuery, destinationEntity, localToWorlds);
+
+                    //destinationPosition = localToWorlds[destinationEntity].Position;
+                }
+                else if (EntityManager.HasComponent(destination.Target, typeof(GreenLineTag)))
+                {
+                    destinationEntity = destination.Target;
+                    destinationPosition = EntityManager.GetComponentData<LocalToWorld>(destinationEntity).Position;
+                    //destinationPosition = localToWorlds[destinationEntity].Position;
+                }
+                else if (EntityManager.HasComponent(destination.Target, typeof(OrangeLineTag)))
+                {
+                    destinationEntity = destination.Target;
+                    destinationPosition = localToWorlds[destinationEntity].Position;
+                }
+                else if (EntityManager.HasComponent(destination.Target, typeof(YellowLineTag)))
+                {
+                    destinationEntity = destination.Target;
+                    destinationPosition = localToWorlds[destinationEntity].Position;
                 }
 
-                var destinationPosition = localToWorlds[destination.Target].Position;
                 var direction = math.normalize(destinationPosition - localToWorlds[entity].Position);
                 translation.Value += direction * train.Speed;
                 rotation.Value = quaternion.LookRotation(direction, new float3(0, 1, 0));
 
                 if (math.lengthsq(localToWorlds[entity].Position - destinationPosition) < 1f)
                 {
-                    
-
-
-
-
                     /*var oldWaypoint = lineWaypoints[destination.Target];
                     // Find to which line the old way point belonged
                     LineComponent line = lines[0];
@@ -81,8 +92,6 @@ public class WagonMovementSystem : JobComponentSystem
                         var newWaypointIndex = oldWaypoint.Index == (line.Waypoints.Length - 1) ? 0 : oldWaypoint.Index + 1;
                         destination.Target = line.Waypoints.Ptr[newWaypointIndex];
                     }*/
-
-                    
                 }
             }
         }).Run();
@@ -92,8 +101,8 @@ public class WagonMovementSystem : JobComponentSystem
         orangeEntities.Dispose();
         yellowEntities.Dispose();
 
-        //lines.Dispose();
-
         return inputDeps;
     }
+
+
 }

@@ -8,4 +8,5 @@ public struct CommuterComponent : IComponentData
 {
     public float3 targetPosition;
     public bool isAtTargetPosition;
+    public float speed;
 }
