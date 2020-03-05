@@ -9,6 +9,7 @@ using UnityEngine;
 public struct QueueComponent : IComponentData
 {
     public float PositioningOffset;
+    public Entity Queue;
 } 
 
 
