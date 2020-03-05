@@ -10,6 +10,10 @@ public class WagonAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
 {
     [SerializeField]
     List<GameObject> Seats = new List<GameObject>();
+    [SerializeField]
+    Transform leftEntryPosition;
+    [SerializeField]
+    Transform rightEntryPosition;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -21,7 +25,12 @@ public class WagonAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
             fixedList.Add(seat);
         }
 
-        dstManager.AddComponentData(entity, new WagonComponent { Seats = fixedList });
+        dstManager.AddComponentData(entity, new WagonComponent
+        {
+            Seats = fixedList,
+            LeftEntryPosition = leftEntryPosition.position,
+            RightEntryPosition = rightEntryPosition.position
+        });
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
