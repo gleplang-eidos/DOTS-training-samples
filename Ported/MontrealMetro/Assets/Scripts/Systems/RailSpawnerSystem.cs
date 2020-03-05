@@ -20,7 +20,7 @@ public class RailSpawnerSystem : JobComponentSystem
             // Instanciate the platform if necessary
             if (railComponent.Type == RailMarkerType.PLATFORM_START)
             {
-                railComponent.Platform = EntityManager.Instantiate(railSpawnComponent.PlatformPrefab);
+                //railComponent.Platform = EntityManager.Instantiate(railSpawnComponent.PlatformPrefab);
             }
 
             EntityManager.SetComponentData(rail, new Translation { Value = translation.Value });
