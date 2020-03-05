@@ -15,7 +15,7 @@ public class QueueSystem : JobComponentSystem
             {
                 var queueComponent = EntityManager.GetComponentData<QueueComponent>(commuterQueueComponent.Queue);
 
-                EntityManager.SetComponentData(entity, new Translation { Value = queueComponent.Position });
+                commuterComponent.targetPosition = queueComponent.Position;
             }
         ).Run();
 
