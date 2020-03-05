@@ -8,6 +8,8 @@ using UnityEngine;
 public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     [SerializeField]
+    GameObject m_PlatformPrefab = null;
+    [SerializeField]
     GameObject m_BlueLine = null;
 
     [SerializeField]
@@ -200,6 +202,7 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
             var railSpawn = new RailSpawnComponent
             {
                 RailPrefab = conversionSystem.GetPrimaryEntity(prefab),
+                PlatformPrefab = conversionSystem.GetPrimaryEntity(m_PlatformPrefab),
                 LineColor = lineColor
             };
 
@@ -266,6 +269,8 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
+        referencedPrefabs.Add(m_PlatformPrefab);
+
         referencedPrefabs.Add(m_BlueRailPrefab);
         referencedPrefabs.Add(m_GreenRailPrefab);
         referencedPrefabs.Add(m_OrangeRailPrefab);
