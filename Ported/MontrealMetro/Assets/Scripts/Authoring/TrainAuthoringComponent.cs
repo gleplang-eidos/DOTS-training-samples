@@ -1,10 +1,9 @@
 ﻿using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
-using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Transforms;
 using Unity.Collections;
+using System.Collections.Generic;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
@@ -57,7 +56,7 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         {
             var wagonEntity = conversionSystem.GetPrimaryEntity(childTransform.gameObject);
             dstManager.AddSharedComponentData(wagonEntity, train);
-            dstManager.AddComponentData(wagonEntity, new DestinationComponent { Target = destinationEntity });
+            dstManager.AddComponentData(wagonEntity, new DestinationComponent { /*Target = destinationEntity*/ });
             dstManager.RemoveComponent<LocalToParent>(wagonEntity);
             dstManager.RemoveComponent<Parent>(wagonEntity);
             dstManager.SetComponentData(wagonEntity, new Translation { Value = childTransform.transform.position });
