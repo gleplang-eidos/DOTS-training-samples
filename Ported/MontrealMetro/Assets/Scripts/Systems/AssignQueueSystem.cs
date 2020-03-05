@@ -13,7 +13,7 @@ public class AssignQueueSystem : JobComponentSystem
         Entities.WithStructuralChanges().WithAll<UnassignedCommuterTag>().ForEach((Entity e, CommuterPlatformComponent commuter) =>
         {
             var queues = EntityManager.GetBuffer<QueueBufferElementData>(commuter.PlatformEntity);
-            EntityManager.AddComponentData<QueueComponent>(e, new QueueComponent { Queue = queues[random.NextInt(0, queues.Length)].entity });
+            EntityManager.AddComponentData<CommuterQueueComponent>(e, new CommuterQueueComponent { Queue = queues[random.NextInt(0, queues.Length)].entity });
             EntityManager.AddComponent<InQueueTag>(e);
 
         }).Run();   
