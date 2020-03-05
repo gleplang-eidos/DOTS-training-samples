@@ -9,12 +9,13 @@ public class CommuterSpawnPointAuthoring : MonoBehaviour, IConvertGameObjectToEn
 {
     public GameObject CommuterPrefab;
     public GameObject Platform;
+    public int nbCommutersToSpawn;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         Entity commuterPrefab = conversionSystem.GetPrimaryEntity(CommuterPrefab);
         Entity platform = conversionSystem.GetPrimaryEntity(Platform);
-        dstManager.AddComponentData(entity, new CommuterSpawnPointComponent { CommuterPrefab = commuterPrefab, Platform = platform });
+        dstManager.AddComponentData(entity, new CommuterSpawnPointComponent { CommuterPrefab = commuterPrefab, Platform = platform, NbCommutersToSpawn = nbCommutersToSpawn });
     }
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)

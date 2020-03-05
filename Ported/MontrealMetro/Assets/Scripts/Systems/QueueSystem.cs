@@ -13,10 +13,33 @@ public class QueueSystem : JobComponentSystem
             .WithoutBurst()
             .ForEach((Entity entity, ref Translation translation, ref CommuterComponent commuterComponent, ref CommuterQueueComponent commuterQueueComponent) =>
             {
+                
                 var queueComponent = EntityManager.GetComponentData<QueueComponent>(commuterQueueComponent.Queue);
+                var queueTransform = EntityManager.GetComponentData<LocalToWorld>(commuterQueueComponent.Queue);
 
-                commuterComponent.targetPosition = queueComponent.Position;
-            }
+                var commuters = EntityManager.GetBuffer<CommuterBufferElementData>(commuterQueueComponent.Queue);
+
+                int queueIndex = -1;
+                for(int i = 0; i < commuters.Length; i++)
+                {
+                    if(commuters[i].entity == entity)
+                    {
+                        queueIndex = i;
+                        break;
+                    }
+                }
+
+                if(queueIndex == -1)
+                {
+                    queueIndex = commuters.Add(new CommuterBufferElementData { entity = entity } );
+                }
+
+                commuterComponent.targetPosition = queueComponent.Position + (-queueTransform.Forward * (queueIndex * queueComponent.PositioningOffset));
+
+                //EntityManager.SetComponentData(entity, new Translation { Value = queueComponent.Position });
+                //commuterComponent.targetPosition = queueComponent.Position;
+            
+          }
         ).Run();
 
         return inputDeps;
