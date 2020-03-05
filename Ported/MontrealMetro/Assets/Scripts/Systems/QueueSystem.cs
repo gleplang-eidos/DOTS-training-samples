@@ -15,7 +15,24 @@ public class QueueSystem : JobComponentSystem
             {
                 var queueComponent = EntityManager.GetComponentData<QueueComponent>(commuterQueueComponent.Queue);
 
-                EntityManager.SetComponentData(entity, new Translation { Value = queueComponent.Position });
+                var commuters = EntityManager.GetBuffer<CommuterBufferElementData>(commuterQueueComponent.Queue);
+
+                int queueIndex = -1;
+                for(int i = 0; i < commuters.Length; i++)
+                {
+                    if(commuters[i].entity == entity)
+                    {
+                        queueIndex = i;
+                        break;
+                    }
+                }
+
+                if(queueIndex == -1)
+                {
+                    queueIndex = commuters.Add(new CommuterBufferElementData { entity = entity } );
+                }
+
+                //EntityManager.SetComponentData(entity, new Translation { Value = queueComponent.Position });
             }
         ).Run();
 
