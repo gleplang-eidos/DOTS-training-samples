@@ -200,11 +200,33 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
             var railSpawn = new RailSpawnComponent
             {
                 RailPrefab = conversionSystem.GetPrimaryEntity(prefab),
-                RailID = railID++,
                 LineColor = lineColor
             };
 
+            var railComponent = new RailComponent
+            {
+                RailID = railID++,
+                Type = currentType
+            };
+
             dstManager.AddComponentData(railEntity, railSpawn);
+            dstManager.AddComponentData(railEntity, railComponent);
+
+            switch (lineColor)
+            {
+                case LineColor.Blue:
+                    dstManager.AddComponent(railEntity, typeof(BlueLineTag));
+                    break;
+                case LineColor.Green:
+                    dstManager.AddComponent(railEntity, typeof(GreenLineTag));
+                    break;
+                case LineColor.Orange:
+                    dstManager.AddComponent(railEntity, typeof(OrangeLineTag));
+                    break;
+                case LineColor.Yellow:
+                    dstManager.AddComponent(railEntity, typeof(YellowLineTag));
+                    break;
+            }
 
             distance += k_RailSpacing;
         }
