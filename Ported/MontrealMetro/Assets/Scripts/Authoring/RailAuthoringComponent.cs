@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -21,7 +20,16 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
     GameObject m_YellowLine = null;
 
     [SerializeField]
-    GameObject m_RailPrefab = null;
+    GameObject m_BlueRailPrefab = null;
+
+    [SerializeField]
+    GameObject m_GreenRailPrefab = null;
+
+    [SerializeField]
+    GameObject m_OrangeRailPrefab = null;
+
+    [SerializeField]
+    GameObject m_YellowRailPrefab = null;
 
     public const float k_BezierPlatformOffset = 3.0f;
 
@@ -132,21 +140,30 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
 
             var translation = new Translation { Value = new float3(railPosition.x, railPosition.y, railPosition.z) };
             var rotation = new Rotation { Value = quaternion.LookRotation(railRotation, new float3(0, 1, 0)) };
-            var materialColor = new MaterialColor { Value = new float4(color.r, color.g, color.b, color.a) };
-            var railSpawn = new RailSpawnComponent { RailPrefab = conversionSystem.GetPrimaryEntity(m_RailPrefab) };
+            var railSpawn = new RailSpawnComponent { RailPrefab = conversionSystem.GetPrimaryEntity(GetRailPrefabPerColor(lineColor)) };
 
             dstManager.AddComponentData(railEntity, translation);
             dstManager.AddComponentData(railEntity, rotation);
-            dstManager.AddComponentData(railEntity, materialColor);
             dstManager.AddComponentData(railEntity, railSpawn);
 
-            /*var rail = Instantiate(m_RailPrefab);
-
-            rail.GetComponent<Renderer>().material.color = color;
-            rail.transform.position = railPosition;
-            rail.transform.LookAt(railPosition - railRotation);*/
-
             distance += k_RailSpacing;
+        }
+    }
+
+    GameObject GetRailPrefabPerColor(LineColor lineColor)
+    {
+        switch(lineColor)
+        {
+            case LineColor.Blue:
+                return m_BlueRailPrefab;
+            case LineColor.Green:
+                return m_GreenRailPrefab;
+            case LineColor.Orange:
+                return m_OrangeRailPrefab;
+            case LineColor.Yellow:
+                return m_YellowRailPrefab;
+            default:
+                return null;
         }
     }
 
@@ -167,6 +184,9 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
 
     public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
     {
-        referencedPrefabs.Add(m_RailPrefab);
+        referencedPrefabs.Add(m_BlueRailPrefab);
+        referencedPrefabs.Add(m_GreenRailPrefab);
+        referencedPrefabs.Add(m_OrangeRailPrefab);
+        referencedPrefabs.Add(m_YellowRailPrefab);
     }
 }

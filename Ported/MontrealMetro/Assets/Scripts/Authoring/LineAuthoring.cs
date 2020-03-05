@@ -7,7 +7,7 @@ using Unity.Collections.LowLevel.Unsafe;
 public class LineAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
     [SerializeField]
-    LineColor m_LineColor;
+    LineColor m_LineColor = LineColor.Blue;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {

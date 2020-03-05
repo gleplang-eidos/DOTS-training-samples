@@ -1,6 +1,5 @@
 ﻿using Unity.Entities;
 using Unity.Jobs;
-using Unity.Rendering;
 using Unity.Transforms;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
@@ -12,7 +11,6 @@ public class RailSpawnerSystem : JobComponentSystem
             (Entity e,
             ref Translation translation,
             ref Rotation rotation,
-            ref MaterialColor materialColor,
             ref RailSpawnComponent railSpawnComponent
             ) =>
         {
@@ -20,8 +18,6 @@ public class RailSpawnerSystem : JobComponentSystem
 
             EntityManager.SetComponentData(rail, new Translation { Value = translation.Value });
             EntityManager.SetComponentData(rail, new Rotation { Value = rotation.Value });
-
-            EntityManager.AddComponentData(rail, new MaterialColor { Value = materialColor.Value });
 
             EntityManager.DestroyEntity(e);
 

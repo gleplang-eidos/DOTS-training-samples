@@ -1234,13 +1234,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0, y: -0.82412624, z: 0.56640625, w: 0}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 69, y: -180, z: 0}
 --- !u!1 &715364195
 GameObject:
   m_ObjectHideFlags: 0
@@ -2659,7 +2659,13 @@ MonoBehaviour:
   m_GreenLine: {fileID: 58909785}
   m_OrangeLine: {fileID: 1085461854}
   m_YellowLine: {fileID: 1036605828}
-  m_RailPrefab: {fileID: 1004504532206030, guid: 93da23fe6fb1d4bc9960cc8e7207ab98,
+  m_BlueRailPrefab: {fileID: 1004504532206030, guid: 93da23fe6fb1d4bc9960cc8e7207ab98,
+    type: 3}
+  m_GreenRailPrefab: {fileID: 1004504532206030, guid: b9105d717a06d409ba80d261d8f79675,
+    type: 3}
+  m_OrangeRailPrefab: {fileID: 1004504532206030, guid: c05eac68b500c48cd8b243e7dcad1aa8,
+    type: 3}
+  m_YellowRailPrefab: {fileID: 1004504532206030, guid: f8931e7e3beae4cfcad26d7ef33f401f,
     type: 3}
 --- !u!114 &1714874836
 MonoBehaviour:
