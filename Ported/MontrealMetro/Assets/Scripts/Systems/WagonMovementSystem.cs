@@ -3,7 +3,6 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 public class WagonMovementSystem : JobComponentSystem
 {
@@ -26,11 +25,6 @@ public class WagonMovementSystem : JobComponentSystem
     {
         var localToWorlds = GetComponentDataFromEntity<LocalToWorld>(true);
 
-        var blueEntities = m_BlueLineQuery.ToEntityArray(Allocator.TempJob);
-        var greenEntities = m_GreenLineQuery.ToEntityArray(Allocator.TempJob);
-        var orangeEntities = m_OrangeLineQuery.ToEntityArray(Allocator.TempJob);
-        var yellowEntities = m_YellowLineQuery.ToEntityArray(Allocator.TempJob);
-
         Entities
             .WithReadOnly(localToWorlds)
             .WithoutBurst()
@@ -40,69 +34,70 @@ public class WagonMovementSystem : JobComponentSystem
         {
             if (destination.Target != Entity.Null)
             {
-                Entity destinationEntity;
-
-                float3 destinationPosition = new float3();
-
                 if (EntityManager.HasComponent(destination.Target, typeof(BlueLineTag)))
                 {
-                    destinationEntity = destination.Target;
-                    destinationPosition = EntityManager.GetComponentData<LocalToWorld>(destinationEntity).Position;
-
-                    //destinationPosition = GetPositionBy(m_BlueLineQuery, destinationEntity, localToWorlds);
-
-                    //destinationPosition = localToWorlds[destinationEntity].Position;
+                    Continue(entity, destination, localToWorlds, train, translation, rotation, m_BlueLineQuery);
                 }
                 else if (EntityManager.HasComponent(destination.Target, typeof(GreenLineTag)))
                 {
-                    destinationEntity = destination.Target;
-                    destinationPosition = EntityManager.GetComponentData<LocalToWorld>(destinationEntity).Position;
-                    //destinationPosition = localToWorlds[destinationEntity].Position;
+                    Continue(entity, destination, localToWorlds, train, translation, rotation, m_GreenLineQuery);
                 }
                 else if (EntityManager.HasComponent(destination.Target, typeof(OrangeLineTag)))
                 {
-                    destinationEntity = destination.Target;
-                    destinationPosition = localToWorlds[destinationEntity].Position;
+                    Continue(entity, destination, localToWorlds, train, translation, rotation, m_OrangeLineQuery);
                 }
                 else if (EntityManager.HasComponent(destination.Target, typeof(YellowLineTag)))
                 {
-                    destinationEntity = destination.Target;
-                    destinationPosition = localToWorlds[destinationEntity].Position;
-                }
-
-                var direction = math.normalize(destinationPosition - localToWorlds[entity].Position);
-                translation.Value += direction * train.Speed;
-                rotation.Value = quaternion.LookRotation(direction, new float3(0, 1, 0));
-
-                if (math.lengthsq(localToWorlds[entity].Position - destinationPosition) < 1f)
-                {
-                    /*var oldWaypoint = lineWaypoints[destination.Target];
-                    // Find to which line the old way point belonged
-                    LineComponent line = lines[0];
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        if (oldWaypoint.LineID == lines[i].LineID)
-                        {
-                            line = lines[i];
-                        }
-                    }
-
-                    unsafe
-                    {
-                        var newWaypointIndex = oldWaypoint.Index == (line.Waypoints.Length - 1) ? 0 : oldWaypoint.Index + 1;
-                        destination.Target = line.Waypoints.Ptr[newWaypointIndex];
-                    }*/
+                    Continue(entity, destination, localToWorlds, train, translation, rotation, m_YellowLineQuery);
                 }
             }
         }).Run();
 
-        blueEntities.Dispose();
-        greenEntities.Dispose();
-        orangeEntities.Dispose();
-        yellowEntities.Dispose();
-
         return inputDeps;
     }
 
+    void Continue(Entity entity,
+        DestinationComponent destination,
+        ComponentDataFromEntity<LocalToWorld> localToWorlds,
+        TrainComponent train,
+        Translation translation,
+        Rotation rotation,
+        EntityQuery query)
+    {
+        float3 destinationPosition = EntityManager.GetComponentData<LocalToWorld>(destination.Target).Position;
 
+        var direction = math.normalize(destinationPosition - localToWorlds[entity].Position);
+        translation.Value += direction * train.Speed;
+        rotation.Value = quaternion.LookRotation(direction, new float3(0, 1, 0));
+
+        if (math.lengthsq(localToWorlds[entity].Position - destinationPosition) < 1f)
+        {
+            var railEntities = query.ToEntityArray(Allocator.TempJob);
+
+            var destRailComponent = EntityManager.GetComponentData<RailComponent>(destination.Target);
+
+            var matchIndex = 0;
+
+            if(destRailComponent.RailID == railEntities.Length - 1)
+            {
+                matchIndex = 0;
+            }
+            else
+            {
+                matchIndex = destRailComponent.RailID + 1;
+            }
+
+            for (int i = 0, length = railEntities.Length; i < length; ++i)
+            {
+                var railComponent = EntityManager.GetComponentData<RailComponent>(railEntities[i]);
+                if (railComponent.RailID == matchIndex)
+                {
+                    destination.Target = railEntities[i];
+                    break;
+                }
+            }
+
+            railEntities.Dispose();
+        }
+    }
 }
