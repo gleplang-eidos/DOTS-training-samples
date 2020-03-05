@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -11,13 +12,16 @@ public class DockSystem : JobComponentSystem
     { 
         var lineWaypointComponents = GetComponentDataFromEntity<LineWaypointComponent>(true);
         var localToWorlds = GetComponentDataFromEntity<LocalToWorld>(true);
+        var doorPanels = GetComponentDataFromEntity<DoorPanelComponent>();
+
         Entities.
             WithReadOnly(localToWorlds).
             WithReadOnly(lineWaypointComponents).
+            WithNativeDisableParallelForRestriction(doorPanels).
             WithStructuralChanges().
             WithoutBurst().
             WithNone<DockedTag>().
-            ForEach((Entity e, TrainComponent train, ref DestinationComponent destination, in LocalToWorld localToWorld) =>
+            ForEach((Entity e, TrainComponent train, in DestinationComponent destination, in LocalToWorld localToWorld) =>
             {
                 bool destinationIsPlatformStart = false;
                 if (lineWaypointComponents.HasComponent(destination.Target))
@@ -35,7 +39,19 @@ public class DockSystem : JobComponentSystem
                     {
                         unsafe
                         {
-                            EntityManager.AddComponent<DockedTag>(train.Wagons.Ptr[i]);
+                            var wagon = train.Wagons.Ptr[i];
+
+                            // Dock wagons
+                            EntityManager.AddComponent<DockedTag>(wagon);
+
+                            // Open doors
+                            if (doorPanels.HasComponent(wagon))
+                            {
+                                //var doorPanelComponent = doorPanels[wagon];
+                                //doorPanelComponent.DoorState = DoorState.Opening;
+                                //doorPanels[wagon] = doorPanelComponent;
+                            }
+
                         }
                     }
                 }
