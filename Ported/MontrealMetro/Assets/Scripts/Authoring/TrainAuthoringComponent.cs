@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Transforms;
+using Unity.Collections;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
@@ -15,15 +16,26 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
     [SerializeField]
     float Speed = 0.002f;
 
+    [SerializeField]
+    List<GameObject> Doors = new List<GameObject>();
+
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         // Get all the children
-        var children = gameObject.GetComponentsInChildren<WagonMonoTag>();
+        var children = gameObject.GetComponentsInChildren<WagonMonoTag>();        var railMarker = Destination != null ? Destination.GetComponent<RailMarker>() : null;
 
-        var railMarker = Destination != null ? Destination.GetComponent<RailMarker>() : null;
+        var doors = new FixedList512<Entity>();
+        foreach (var door in Doors)
+        {
+            doors.Add(conversionSystem.GetPrimaryEntity(door));
+        }
 
         // Create the shared component
-        var train = new TrainComponent { Wagons = new UnsafeList<Entity> (children.Length, Unity.Collections.Allocator.Persistent), Speed = Speed };
+        var train = new TrainComponent {
+            Wagons = new UnsafeList<Entity> (children.Length, Unity.Collections.Allocator.Persistent),
+            Speed = Speed,
+            Doors = doors };
+ 
         train.LineColor = railMarker != null ? railMarker.LineColor : LineColor.Blue;
 
         // Fill the list of wagon as well as assigning the shared component to every wagon.
