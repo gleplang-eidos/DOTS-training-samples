@@ -2,6 +2,6 @@
 using System.Collections;
 using Unity.Entities;
 
-public class DockedTag : IComponentData
+public struct DockedTag : IComponentData
 {
 }
