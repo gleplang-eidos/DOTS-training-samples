@@ -31,6 +31,12 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
     [SerializeField]
     GameObject m_YellowRailPrefab = null;
 
+    [SerializeField]
+    GameObject m_EntryRailPrefab = null;
+
+    [SerializeField]
+    GameObject m_ExitRailPrefab = null;
+
     public const float k_BezierPlatformOffset = 3.0f;
 
     public const float k_RailSpacing = 0.5f;
@@ -67,29 +73,32 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
         var bezierPath = new BezierPath();
         List<BezierPoint> points = bezierPath.points;
         int total_outboundPoints = outboundPoints.Length;
-        Vector3 currentLocation = Vector3.zero;
+
+        List<RailMarkerType> bezierRailTypeList = new List<RailMarkerType>();
 
         // - - - - - - - - - - - - - - - - - - - - - - - -  OUTBOUND points
         for (int i = 0; i < total_outboundPoints; i++)
         {
             bezierPath.AddPoint(outboundPoints[i].transform.position);
+
+            bezierRailTypeList.Add(outboundPoints[i].railMarkerType);
         }
 
         // fix the OUTBOUND handles
         for (int i = 0; i <= total_outboundPoints - 1; i++)
         {
-            BezierPoint _currentPoint = points[i];
+            BezierPoint currentPoint = points[i];
             if (i == 0)
             {
-                _currentPoint.SetHandles(points[1].location - _currentPoint.location);
+                currentPoint.SetHandles(points[1].location - currentPoint.location);
             }
             else if (i == total_outboundPoints - 1)
             {
-                _currentPoint.SetHandles(_currentPoint.location - points[i - 1].location);
+                currentPoint.SetHandles(currentPoint.location - points[i - 1].location);
             }
             else
             {
-                _currentPoint.SetHandles(points[i + 1].location - points[i - 1].location);
+                currentPoint.SetHandles(points[i + 1].location - points[i - 1].location);
             }
         }
 
@@ -100,50 +109,101 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
         List<BezierPoint> returnPoints = new List<BezierPoint>();
         for (int i = total_outboundPoints - 1; i >= 0; i--)
         {
-            Vector3 _targetLocation = bezierPath.GetPoint_PerpendicularOffset(bezierPath.points[i], platformOffset);
-            bezierPath.AddPoint(_targetLocation);
+            Vector3 targetLocation = bezierPath.GetPoint_PerpendicularOffset(bezierPath.points[i], platformOffset);
+            bezierPath.AddPoint(targetLocation);
             returnPoints.Add(points[points.Count - 1]);
+
+            if(outboundPoints[i].railMarkerType == RailMarkerType.PLATFORM_START)
+            {
+                bezierRailTypeList.Add(RailMarkerType.PLATFORM_END);
+            }
+            else if(outboundPoints[i].railMarkerType == RailMarkerType.PLATFORM_END)
+            {
+                bezierRailTypeList.Add(RailMarkerType.PLATFORM_START);
+            }
+            else
+            {
+                bezierRailTypeList.Add(RailMarkerType.ROUTE);
+            }
         }
 
         // fix the RETURN handles
         for (int i = 0; i <= total_outboundPoints - 1; i++)
         {
-            BezierPoint _currentPoint = returnPoints[i];
+            BezierPoint currentPoint = returnPoints[i];
             if (i == 0)
             {
-                _currentPoint.SetHandles(returnPoints[1].location - _currentPoint.location);
+                currentPoint.SetHandles(returnPoints[1].location - currentPoint.location);
             }
             else if (i == total_outboundPoints - 1)
             {
-                _currentPoint.SetHandles(_currentPoint.location - returnPoints[i - 1].location);
+                currentPoint.SetHandles(currentPoint.location - returnPoints[i - 1].location);
             }
             else
             {
-                _currentPoint.SetHandles(returnPoints[i + 1].location - returnPoints[i - 1].location);
+                currentPoint.SetHandles(returnPoints[i + 1].location - returnPoints[i - 1].location);
             }
         }
 
         bezierPath.MeasurePath();
 
+        var railID = 0;
+
         // Now, let's lay the rail meshes
         float distance = 0f;
-        //Metro _M = Metro.INSTANCE;
+
+        List<Entity> railEntityList = new List<Entity>();
+
+        RailMarkerType currentType = RailMarkerType.ROUTE;
+        RailMarkerType previousType = RailMarkerType.ROUTE;
+
         while (distance < bezierPath.GetPathDistance())
         {
             float distanceAsRailFactor = Get_distanceAsRailProportion(bezierPath, distance);
             Vector3 railPosition = Get_PositionOnRail(bezierPath, distanceAsRailFactor);
             Vector3 railRotation = Get_RotationOnRail(bezierPath, distanceAsRailFactor);
 
-            var color = ColorHelper.GetColorByLineColor(lineColor);
-
             var railEntity = dstManager.CreateEntity();
+
+            railEntityList.Add(railEntity);
 
             var translation = new Translation { Value = new float3(railPosition.x, railPosition.y, railPosition.z) };
             var rotation = new Rotation { Value = quaternion.LookRotation(railRotation, new float3(0, 1, 0)) };
-            var railSpawn = new RailSpawnComponent { RailPrefab = conversionSystem.GetPrimaryEntity(GetRailPrefabPerColor(lineColor)) };
 
             dstManager.AddComponentData(railEntity, translation);
             dstManager.AddComponentData(railEntity, rotation);
+
+            GameObject prefab = GetRailPrefabPerColor(lineColor);
+
+            currentType = bezierRailTypeList[bezierPath.GetRegionIndex(distance)];
+
+            if (currentType == RailMarkerType.ROUTE)
+            {
+                prefab = GetRailPrefabPerColor(lineColor);
+
+                previousType = currentType;
+            }
+            else if (currentType != previousType)
+            {
+                previousType = currentType;
+
+                if(currentType == RailMarkerType.PLATFORM_START)
+                {
+                    prefab = m_EntryRailPrefab;
+                }
+                else
+                {
+                    prefab = m_ExitRailPrefab;
+                }
+            }
+
+            var railSpawn = new RailSpawnComponent
+            {
+                RailPrefab = conversionSystem.GetPrimaryEntity(prefab),
+                RailID = railID++,
+                LineColor = lineColor
+            };
+
             dstManager.AddComponentData(railEntity, railSpawn);
 
             distance += k_RailSpacing;
@@ -188,5 +248,8 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
         referencedPrefabs.Add(m_GreenRailPrefab);
         referencedPrefabs.Add(m_OrangeRailPrefab);
         referencedPrefabs.Add(m_YellowRailPrefab);
+
+        referencedPrefabs.Add(m_EntryRailPrefab);
+        referencedPrefabs.Add(m_ExitRailPrefab);
     }
 }

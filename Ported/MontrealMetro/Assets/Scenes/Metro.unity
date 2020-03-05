@@ -2667,6 +2667,10 @@ MonoBehaviour:
     type: 3}
   m_YellowRailPrefab: {fileID: 1004504532206030, guid: f8931e7e3beae4cfcad26d7ef33f401f,
     type: 3}
+  m_EntryRailPrefab: {fileID: 1004504532206030, guid: 229da5268255b426f87f00e47290d340,
+    type: 3}
+  m_ExitRailPrefab: {fileID: 1004504532206030, guid: 5b2c4d335102847edb314c04cb0cd5df,
+    type: 3}
 --- !u!114 &1714874836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2725,7 +2729,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   metroLineID: 1
   pointIndex: 16
-  railMarkerType: 1
+  railMarkerType: 2
   LineColor: 2
 --- !u!1 &1724026453
 GameObject:

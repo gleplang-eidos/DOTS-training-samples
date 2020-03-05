@@ -25,8 +25,8 @@ public class DockSystem : JobComponentSystem
                     destinationIsPlatformStart = lineWaypointComponents[destination.Target].Type == RailMarkerType.PLATFORM_START;
                 }
 
-                if (destinationIsPlatformStart)
-                    Debug.Log(math.length(localToWorlds[destination.Target].Position - localToWorld.Position));
+                //if (destinationIsPlatformStart)
+                    //Debug.Log(math.length(localToWorlds[destination.Target].Position - localToWorld.Position));
 
                 // If close enough to a dock entry, stop every wagon by adding the docked tag.
                 if (destinationIsPlatformStart && math.abs(math.length(localToWorlds[destination.Target].Position - localToWorld.Position)) <= 1)

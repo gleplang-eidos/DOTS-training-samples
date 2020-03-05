@@ -5,6 +5,8 @@ using Unity.Entities;
 public struct RailSpawnComponent : IComponentData
 {
     public Entity RailPrefab;
+    public int RailID;
+    public LineColor LineColor;
 } 
 
 

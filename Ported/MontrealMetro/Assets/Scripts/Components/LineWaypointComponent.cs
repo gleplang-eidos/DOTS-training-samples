@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-using Unity.Entities;
-using Unity.Mathematics;
+﻿using Unity.Entities;
 
 public struct LineWaypointComponent : IComponentData
 {
