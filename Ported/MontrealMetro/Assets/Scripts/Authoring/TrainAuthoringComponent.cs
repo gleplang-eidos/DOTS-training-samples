@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
+public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     [SerializeField]
     GameObject Destination = null;
@@ -17,6 +17,9 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
 
     [SerializeField]
     List<GameObject> Doors = new List<GameObject>();
+
+    [SerializeField]
+    public GameObject platform;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -33,7 +36,10 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         var train = new TrainComponent {
             Wagons = new FixedList128<Entity>(),
             Speed = Speed,
-            Doors = doors };
+            Doors = doors,
+            Platform = conversionSystem.GetPrimaryEntity(platform)};
+
+        dstManager.AddComponent<DockedTag>(entity);
  
         train.LineColor = railMarker != null ? railMarker.LineColor : LineColor.Blue;
 
@@ -61,7 +67,6 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
             dstManager.RemoveComponent<Parent>(wagonEntity);
             dstManager.SetComponentData(wagonEntity, new Translation { Value = childTransform.transform.position });
             dstManager.SetComponentData(wagonEntity, new Rotation { Value = childTransform.transform.rotation });
-
             if(railMarker != null)
             {
                 switch (railMarker.LineColor)
@@ -83,5 +88,10 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         }
 
         dstManager.DestroyEntity(entity);
+    }
+
+    public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+    {
+        referencedPrefabs.Add(platform);
     }
 }
