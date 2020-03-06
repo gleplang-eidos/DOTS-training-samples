@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Destination: {fileID: 0}
+  HeadWagon: {fileID: 1473703207670599546}
   Speed: 0.002
   Doors:
   - {fileID: 5239539687073081389}
@@ -137,6 +138,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0cb35f3177c2d4fa9be82c5265c70cb4, type: 3}
+--- !u!1 &1473703207670599546 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1005656507454012, guid: 0cb35f3177c2d4fa9be82c5265c70cb4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1472738520935947590}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1476719062831392602 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4059157056928284, guid: 0cb35f3177c2d4fa9be82c5265c70cb4,

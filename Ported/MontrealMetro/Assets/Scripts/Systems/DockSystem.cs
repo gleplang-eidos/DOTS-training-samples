@@ -20,6 +20,7 @@ public class DockSystem : JobComponentSystem
             WithStructuralChanges().
             WithoutBurst().
             WithNone<DockedTag>().
+            WithAny<HeadWagonTag>().
             ForEach((Entity e, TrainComponent train, ref DestinationComponent destination, in LocalToWorld localToWorld) =>
             {
                 bool destinationIsPlatformStart = false;
@@ -50,6 +51,18 @@ public class DockSystem : JobComponentSystem
                         {
                             ecb.AddComponent<DockedTag>(train.Wagons[i]);
                         }
+                    }
+
+                    var platform = EntityManager.GetComponentData<PlatformComponent>(railComponents[destination.Target].Platform);
+                    platform.DockedTrain = e;
+                    ecb.AddComponent(railComponents[destination.Target].Platform, new TimerComponent { TimerVariable = platform.DockedTime });
+                    ecb.SetComponent(railComponents[destination.Target].Platform, platform);
+                    train.Platform = railComponents[destination.Target].Platform;
+
+                    
+                    for (var i = 0; i < train.Wagons.Length; ++i)
+                    {
+                        ecb.SetSharedComponent(train.Wagons[i], train);
                     }
                 }
             }).Run();

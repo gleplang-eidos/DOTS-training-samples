@@ -1,6 +1,5 @@
 ﻿using System;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 
 [Serializable]
@@ -11,4 +10,7 @@ public struct TrainComponent : ISharedComponentData
     public Entity Platform;
     public float Speed;
     public LineColor LineColor;
+    public float WagonOffset;
+    public Entity HeadWagon;
+    public int StationIndex;
 }

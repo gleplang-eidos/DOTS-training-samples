@@ -5,6 +5,7 @@ using Unity.Jobs;
 using Unity.Transforms;
 using Unity.Collections;
 
+[UpdateAfter(typeof(DockSystem))]
 public class AssignQueueSystem : JobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle inputDeps)
