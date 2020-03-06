@@ -111,7 +111,7 @@ public class WagonMovementSystem : JobComponentSystem
 
                 var firstPosition = EntityManager.GetComponentData<Translation>(destination.Target);
 
-                firstPosition.Value.z += train.WagonOffset * EntityManager.GetComponentData<WagonComponent>(entity).WagonIndex;
+                firstPosition.Value.z -= train.WagonOffset * EntityManager.GetComponentData<WagonComponent>(entity).WagonIndex;
 
                 var direction = math.normalize(firstPosition.Value - localToWorlds[entity].Position);
 
@@ -153,6 +153,16 @@ public class WagonMovementSystem : JobComponentSystem
         var railEntities = query.ToEntityArray(Allocator.TempJob);
 
         var firstStation = railEntities[0];
+
+        for (int i = 0, length = railEntities.Length; i < length; ++i)
+        {
+            var railComponent = EntityManager.GetComponentData<RailComponent>(railEntities[i]);
+            if(railComponent.Type == RailMarkerType.PLATFORM_START)
+            {
+                firstStation = railEntities[i];
+                break;
+            }
+        }
 
         railEntities.Dispose();
 
