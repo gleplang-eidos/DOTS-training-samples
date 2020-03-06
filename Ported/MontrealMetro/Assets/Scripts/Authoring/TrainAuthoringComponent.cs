@@ -7,19 +7,23 @@ using System.Collections.Generic;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
+public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
 {
     [SerializeField]
+    [HideInInspector]
     GameObject Destination = null;
+
+    [SerializeField]
+    LineColor LineColor;
 
     [SerializeField]
     float Speed = 0.002f;
 
     [SerializeField]
-    List<GameObject> Doors = new List<GameObject>();
+    float WagonOffset = 2.0f;
 
     [SerializeField]
-    public GameObject platform;
+    List<GameObject> Doors = new List<GameObject>();
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -35,14 +39,12 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         // Create the shared component
         var train = new TrainComponent {
             Wagons = new FixedList128<Entity>(),
-            Speed = Speed,
             Doors = doors,
-            Platform = conversionSystem.GetPrimaryEntity(platform)};
-
-        dstManager.AddComponent<DockedTag>(entity);
+            Speed = Speed,
+            LineColor = LineColor,
+            WagonOffset = WagonOffset
+        };
  
-        train.LineColor = railMarker != null ? railMarker.LineColor : LineColor.Blue;
-
         // Fill the list of wagon as well as assigning the shared component to every wagon.
         //foreach (var childTransform in children)
         //{
@@ -67,6 +69,7 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
             dstManager.RemoveComponent<Parent>(wagonEntity);
             dstManager.SetComponentData(wagonEntity, new Translation { Value = childTransform.transform.position });
             dstManager.SetComponentData(wagonEntity, new Rotation { Value = childTransform.transform.rotation });
+
             if(railMarker != null)
             {
                 switch (railMarker.LineColor)
@@ -88,10 +91,5 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         }
 
         dstManager.DestroyEntity(entity);
-    }
-
-    public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
-    {
-        referencedPrefabs.Add(platform);
     }
 }
