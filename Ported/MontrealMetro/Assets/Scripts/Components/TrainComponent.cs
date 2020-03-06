@@ -6,9 +6,9 @@ using Unity.Entities;
 [Serializable]
 public struct TrainComponent : ISharedComponentData
 {
-    public UnsafeList<Entity> Wagons;
+    public FixedList128<Entity> Wagons;
     public FixedList512<Entity> Doors;
-
+    public Entity Platform;
     public float Speed;
     public LineColor LineColor;
 }

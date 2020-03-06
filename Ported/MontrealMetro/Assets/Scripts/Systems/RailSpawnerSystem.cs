@@ -1,5 +1,6 @@
 ﻿using Unity.Entities;
 using Unity.Jobs;
+using Unity.Mathematics;
 using Unity.Transforms;
 
 [UpdateInGroup(typeof(InitializationSystemGroup))]
@@ -20,9 +21,12 @@ public class RailSpawnerSystem : JobComponentSystem
             // Instanciate the platform if necessary
             if (railComponent.Type == RailMarkerType.PLATFORM_START)
             {
-                //railComponent.Platform = EntityManager.Instantiate(railSpawnComponent.PlatformPrefab);
-            }
+                railComponent.Platform = EntityManager.Instantiate(railSpawnComponent.PlatformPrefab);
+                EntityManager.SetComponentData(railComponent.Platform, new Translation { Value = translation.Value });
 
+                var platformRotation = quaternion.AxisAngle(new float3(0f, 1f, 0f), math.radians(90f));
+                EntityManager.SetComponentData(railComponent.Platform, new Rotation { Value = math.mul(rotation.Value,platformRotation) });
+            }
             EntityManager.SetComponentData(rail, new Translation { Value = translation.Value });
             EntityManager.SetComponentData(rail, new Rotation { Value = rotation.Value });
 

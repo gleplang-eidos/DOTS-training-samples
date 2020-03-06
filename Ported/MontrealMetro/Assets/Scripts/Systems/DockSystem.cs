@@ -9,13 +9,13 @@ public class DockSystem : JobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     { 
-        var lineWaypointComponents = GetComponentDataFromEntity<LineWaypointComponent>(true);
+        var railComponents = GetComponentDataFromEntity<RailComponent>(true);
         var localToWorlds = GetComponentDataFromEntity<LocalToWorld>(true);
         var doorPanels = GetComponentDataFromEntity<DoorPanelComponent>();
 
         Entities.
             WithReadOnly(localToWorlds).
-            WithReadOnly(lineWaypointComponents).
+            WithReadOnly(railComponents).
             WithStructuralChanges().
             WithoutBurst().
             WithNone<DockedTag>().
@@ -23,9 +23,9 @@ public class DockSystem : JobComponentSystem
             {
                 
                 bool destinationIsPlatformStart = false;
-                if (lineWaypointComponents.HasComponent(destination.Target))
+                if (railComponents.HasComponent(destination.Target))
                 {
-                    destinationIsPlatformStart = lineWaypointComponents[destination.Target].Type == RailMarkerType.PLATFORM_START;
+                    destinationIsPlatformStart = railComponents[destination.Target].Type == RailMarkerType.PLATFORM_END;
                 }
 
                 // If close enough to a dock entry, stop every wagon by adding the docked tag.
@@ -48,7 +48,7 @@ public class DockSystem : JobComponentSystem
                     {
                         unsafe
                         {
-                            EntityManager.AddComponent<DockedTag>(train.Wagons.Ptr[i]);
+                            EntityManager.AddComponent<DockedTag>(train.Wagons[i]);
                         }
                     }
                 }
