@@ -47,10 +47,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DockedTime: 10
   Queues:
-  - {fileID: 7442061077434926517}
-  - {fileID: 1470719980331250621}
-  - {fileID: 5904370907209279032}
   - {fileID: 4051548155028717105}
+  - {fileID: 5904370907209279032}
+  - {fileID: 1470719980331250621}
+  - {fileID: 7442061077434926517}
 --- !u!114 &4744140993794465234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,7 +79,7 @@ PrefabInstance:
     - target: {fileID: 4610996873279732595, guid: 548a8bf965241441bad8a97541591571,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 17
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4610996873279732595, guid: 548a8bf965241441bad8a97541591571,
         type: 3}
