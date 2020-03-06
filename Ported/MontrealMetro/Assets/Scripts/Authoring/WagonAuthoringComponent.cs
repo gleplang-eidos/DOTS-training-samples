@@ -14,7 +14,7 @@ public class WagonAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
     Transform leftEntryPosition;
     [SerializeField]
     Transform rightEntryPosition;
-
+      
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         FixedList128<Entity> fixedList = new FixedList128<Entity>();
