@@ -20,6 +20,7 @@ public class BoardTrainSystem : JobComponentSystem
         var commuters = GetBufferFromEntity<CommuterBufferElementData>(true);
         var localToWorlds = GetComponentDataFromEntity<LocalToWorld>(true);
         var commuterWagonComponents = GetComponentDataFromEntity<CommuterWagonComponent>(true);
+        var queueComponents = GetComponentDataFromEntity<QueueComponent>(true);
 
         Entities.WithoutBurst().WithAll<DockedTag>().ForEach((Entity e, TrainComponent train) =>
         {
@@ -30,16 +31,18 @@ public class BoardTrainSystem : JobComponentSystem
                 var commuterInstance = commuters[queueInstance[i].entity];
                 for(int j = 0; j < commuterInstance.Length; ++j)
                 {
-                    if (commuterWagonComponents.Exists(commuterInstance[j].entity))
+                    // already assigned a seat or no more seats left
+                    if (commuterWagonComponents.Exists(commuterInstance[j].entity) || j >= wagonComponent.Seats.Length)
                     {
                         continue;
                     }
 
                     var commuterComponent = new CommuterWagonComponent();
-                    var seat = wagonComponent.Seats[random.NextInt(0, wagonComponent.Seats.Length-1)];
+                    var seat = wagonComponent.Seats[j];
 
                     commuterComponent.SeatPosition = localToWorlds[seat].Position;
                     commuterComponent.EntryPosition = wagonComponent.RightEntryPosition;
+                    commuterComponent.ExitPosition = queueComponents[queueInstance[i].entity].Position;
                     commuterComponent.BoardingState = CommuterWagonComponent.EBoardingState.Boarding;
                     ecb.AddComponent(commuterInstance[j].entity, commuterComponent);
                     ecb.RemoveComponent<CommuterQueueComponent>(commuterInstance[j].entity);

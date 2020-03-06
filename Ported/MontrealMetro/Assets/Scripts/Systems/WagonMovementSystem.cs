@@ -107,17 +107,42 @@ public class WagonMovementSystem : JobComponentSystem
             }
             else
             {
-                var railEntities = m_GreenLineQuery.ToEntityArray(Allocator.TempJob);
 
-                destination.Target = railEntities[0];
-
-                railEntities.Dispose();
-
+                destination.Target = GetFirstStation(train.LineColor);
                 FindNextDestination(entity, ref destination, localToWorlds, train, ref translation, ref rotation, m_GreenLineQuery);
             }
         }).Run();
 
         return inputDeps;
+    }
+
+    Entity GetFirstStation(LineColor lineColor)
+    {
+        EntityQuery query = m_BlueLineQuery;
+
+        switch(lineColor)
+        {
+            case LineColor.Blue:
+                query = m_BlueLineQuery;
+                break;
+            case LineColor.Green:
+                query = m_GreenLineQuery;
+                break;
+            case LineColor.Orange:
+                query = m_OrangeLineQuery;
+                break;
+            case LineColor.Yellow:
+                query = m_YellowLineQuery;
+                break;
+        }
+
+        var railEntities = query.ToEntityArray(Allocator.TempJob);
+
+        var firstStation = railEntities[0];
+
+        railEntities.Dispose();
+
+        return firstStation;
     }
 
     void FindNextDestination(Entity entity,

@@ -12,6 +12,7 @@ public class DockSystem : JobComponentSystem
         var railComponents = GetComponentDataFromEntity<RailComponent>(true);
         var localToWorlds = GetComponentDataFromEntity<LocalToWorld>(true);
         var doorPanels = GetComponentDataFromEntity<DoorPanelComponent>();
+        var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.TempJob);
 
         Entities.
             WithReadOnly(localToWorlds).
@@ -21,7 +22,6 @@ public class DockSystem : JobComponentSystem
             WithNone<DockedTag>().
             ForEach((Entity e, TrainComponent train, ref DestinationComponent destination, in LocalToWorld localToWorld) =>
             {
-                
                 bool destinationIsPlatformStart = false;
                 if (railComponents.HasComponent(destination.Target))
                 {
@@ -48,11 +48,14 @@ public class DockSystem : JobComponentSystem
                     {
                         unsafe
                         {
-                            EntityManager.AddComponent<DockedTag>(train.Wagons[i]);
+                            ecb.AddComponent<DockedTag>(train.Wagons[i]);
                         }
                     }
                 }
             }).Run();
+
+        ecb.Playback(EntityManager);
+        ecb.Dispose();
 
         return inputDeps;
     }
