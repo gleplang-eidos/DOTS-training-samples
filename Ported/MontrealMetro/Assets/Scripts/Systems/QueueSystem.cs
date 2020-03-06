@@ -35,11 +35,8 @@ public class QueueSystem : JobComponentSystem
                 }
 
                 commuterComponent.targetPosition = queueComponent.Position + (-queueTransform.Forward * (queueIndex * queueComponent.PositioningOffset));
-
-                //EntityManager.SetComponentData(entity, new Translation { Value = queueComponent.Position });
-                //commuterComponent.targetPosition = queueComponent.Position;
-            
-          }
+                commuterComponent.isAtTargetPosition = false;
+            }
         ).Run();
 
         return inputDeps;
