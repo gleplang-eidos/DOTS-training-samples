@@ -45,7 +45,7 @@ public class BoardTrainSystem : JobComponentSystem
                   
                     commuterComponent.SeatPosition = localToWorlds[seat].Position;
                     commuterComponent.EntryPosition = wagonComponent.RightEntryPosition;
-                    commuterComponent.ExitPosition = queueComponents[queueInstance[i].entity].Position;
+                    commuterComponent.ExitPosition = localToWorlds[queueInstance[i].entity].Position;
                     commuterComponent.BoardingState = CommuterWagonComponent.EBoardingState.Boarding;
                     ecb.AddComponent(commuterInstance[j].entity, commuterComponent);
                     ecb.RemoveComponent<CommuterQueueComponent>(commuterInstance[j].entity);
