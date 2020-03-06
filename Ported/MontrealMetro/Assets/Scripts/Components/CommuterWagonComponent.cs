@@ -12,6 +12,7 @@ public struct CommuterWagonComponent: IComponentData
 
     public Entity Wagon;
     public float3 EntryPosition;
+    public float3 ExitPosition;
     public float3 SeatPosition;
     public EBoardingState BoardingState;
 }
