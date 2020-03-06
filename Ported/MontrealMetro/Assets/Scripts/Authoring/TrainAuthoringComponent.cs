@@ -20,6 +20,9 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
     float Speed = 0.002f;
 
     [SerializeField]
+    float WagonOffset = 2.0f;
+
+    [SerializeField]
     List<GameObject> Doors = new List<GameObject>();
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -38,7 +41,8 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
             Wagons = new FixedList128<Entity>(),
             Doors = doors,
             Speed = Speed,
-            LineColor = LineColor
+            LineColor = LineColor,
+            WagonOffset = WagonOffset
         };
  
         // Fill the list of wagon as well as assigning the shared component to every wagon.
