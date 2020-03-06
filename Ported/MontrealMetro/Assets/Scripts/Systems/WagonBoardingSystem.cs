@@ -33,7 +33,7 @@ public class WagonBoardingSystem : JobComponentSystem
                     if (commuterComponent.isAtTargetPosition &&
                        commuterComponent.targetPosition.Equals(commuterWagonComponent.SeatPosition))
                     {
-                        ecb.AddComponent(entity, new Parent() { Value = commuterWagonComponent.Wagon });
+                        ecb.AddComponent(entity, new Parent() { Value = commuterWagonComponent.Seat });
                         ecb.AddComponent<LocalToParent>(entity);
                         ecb.SetComponent(entity, new Translation());
                     }

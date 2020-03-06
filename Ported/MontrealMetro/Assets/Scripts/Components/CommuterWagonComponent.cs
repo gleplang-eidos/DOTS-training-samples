@@ -10,7 +10,7 @@ public struct CommuterWagonComponent: IComponentData
         Unboarding
     }
 
-    public Entity Wagon;
+    public Entity Seat;
     public float3 EntryPosition;
     public float3 ExitPosition;
     public float3 SeatPosition;
