@@ -156,9 +156,12 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
 
         RailMarkerType currentType = RailMarkerType.ROUTE;
         RailMarkerType previousType = RailMarkerType.ROUTE;
+        RailMarkerType finalType = RailMarkerType.ROUTE;
 
         while (distance < bezierPath.GetPathDistance())
         {
+            finalType = RailMarkerType.ROUTE;
+
             float distanceAsRailFactor = Get_distanceAsRailProportion(bezierPath, distance);
             Vector3 railPosition = Get_PositionOnRail(bezierPath, distanceAsRailFactor);
             Vector3 railRotation = Get_RotationOnRail(bezierPath, distanceAsRailFactor);
@@ -185,8 +188,6 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
             }
             else if (currentType != previousType)
             {
-                previousType = currentType;
-
                 if(currentType == RailMarkerType.PLATFORM_START)
                 {
                     prefab = m_EntryRailPrefab;
@@ -195,6 +196,10 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
                 {
                     prefab = m_ExitRailPrefab;
                 }
+
+                previousType = currentType;
+
+                finalType = currentType;
             }
 
             var railSpawn = new RailSpawnComponent
@@ -206,7 +211,7 @@ public class RailAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity,
             var railComponent = new RailComponent
             {
                 RailID = railID++,
-                Type = currentType
+                Type = finalType
             };
 
             dstManager.AddComponentData(railEntity, railSpawn);
