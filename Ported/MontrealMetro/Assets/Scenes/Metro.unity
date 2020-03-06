@@ -2655,6 +2655,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73156d9ff7c774ef39d800cb9d980ebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_PlatformPrefab: {fileID: 4605368457254489405, guid: 548a8bf965241441bad8a97541591571,
+    type: 3}
   m_BlueLine: {fileID: 350588283}
   m_GreenLine: {fileID: 58909785}
   m_OrangeLine: {fileID: 1085461854}
