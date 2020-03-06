@@ -48,7 +48,7 @@ public class DockSystem : JobComponentSystem
                     {
                         unsafe
                         {
-                            EntityManager.AddComponent<DockedTag>(train.Wagons.Ptr[i]);
+                            EntityManager.AddComponent<DockedTag>(train.Wagons[i]);
                         }
                     }
                 }

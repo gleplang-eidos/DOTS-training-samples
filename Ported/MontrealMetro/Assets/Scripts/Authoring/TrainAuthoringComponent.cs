@@ -31,7 +31,7 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
 
         // Create the shared component
         var train = new TrainComponent {
-            Wagons = new UnsafeList<Entity> (children.Length, Unity.Collections.Allocator.Persistent),
+            Wagons = new FixedList128<Entity>(),
             Speed = Speed,
             Doors = doors };
  
