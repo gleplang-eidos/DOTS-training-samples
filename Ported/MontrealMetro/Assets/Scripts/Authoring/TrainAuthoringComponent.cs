@@ -10,7 +10,11 @@ using System.Collections.Generic;
 public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
 {
     [SerializeField]
+    [HideInInspector]
     GameObject Destination = null;
+
+    [SerializeField]
+    LineColor LineColor;
 
     [SerializeField]
     float Speed = 0.002f;
@@ -32,11 +36,11 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         // Create the shared component
         var train = new TrainComponent {
             Wagons = new FixedList128<Entity>(),
+            Doors = doors,
             Speed = Speed,
-            Doors = doors };
+            LineColor = LineColor
+        };
  
-        train.LineColor = railMarker != null ? railMarker.LineColor : LineColor.Blue;
-
         // Fill the list of wagon as well as assigning the shared component to every wagon.
         //foreach (var childTransform in children)
         //{
