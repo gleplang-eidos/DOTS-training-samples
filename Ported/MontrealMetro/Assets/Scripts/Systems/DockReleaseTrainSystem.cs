@@ -11,6 +11,8 @@ public class DockReleaseTrainSystem : JobComponentSystem
     {
         var doorPanels = GetComponentDataFromEntity<DoorPanelComponent>();
 
+        var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.TempJob);
+
         Entities.
             WithStructuralChanges().
             WithoutBurst().
@@ -40,7 +42,7 @@ public class DockReleaseTrainSystem : JobComponentSystem
                     {
                         unsafe
                         {
-                            EntityManager.RemoveComponent<DockedTag>(train.Wagons[i]);
+                            ecb.RemoveComponent<DockedTag>(train.Wagons[i]);
                         }
                     }
 
@@ -48,6 +50,9 @@ public class DockReleaseTrainSystem : JobComponentSystem
                     platform.DockedTrain = Entity.Null;
                 }
             }).Run();
+
+        ecb.Playback(EntityManager);
+        ecb.Dispose();
 
         return inputDeps;
     }

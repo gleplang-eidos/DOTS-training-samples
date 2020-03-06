@@ -28,6 +28,9 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
     [SerializeField]
     float WagonOffset = 5.25f;
 
+    [SerializeField]
+    int StationIndex = 0;
+
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         // Get all the children
@@ -48,7 +51,8 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
             Speed = Speed,
             LineColor = LineColor,
             WagonOffset = WagonOffset,
-            HeadWagon = conversionSystem.GetPrimaryEntity(children[children.Length - 1])
+            HeadWagon = conversionSystem.GetPrimaryEntity(children[children.Length - 1]),
+            StationIndex = StationIndex
         };
 
         dstManager.AddComponent<HeadWagonTag>(conversionSystem.GetPrimaryEntity(children[children.Length - 1]));

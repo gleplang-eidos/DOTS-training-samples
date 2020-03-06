@@ -12,4 +12,5 @@ public struct TrainComponent : ISharedComponentData
     public LineColor LineColor;
     public float WagonOffset;
     public Entity HeadWagon;
+    public int StationIndex;
 }

@@ -107,7 +107,7 @@ public class WagonMovementSystem : JobComponentSystem
             }
             else
             {
-                destination.Target = GetFirstStation(train.LineColor);
+                destination.Target = GetStartStation(train.LineColor, train.StationIndex);
 
                 var firstPosition = EntityManager.GetComponentData<Translation>(destination.Target);
 
@@ -130,7 +130,7 @@ public class WagonMovementSystem : JobComponentSystem
         return inputDeps;
     }
 
-    Entity GetFirstStation(LineColor lineColor)
+    Entity GetStartStation(LineColor lineColor, int stationIndex)
     {
         EntityQuery query = m_BlueLineQuery;
 
@@ -153,14 +153,19 @@ public class WagonMovementSystem : JobComponentSystem
         var railEntities = query.ToEntityArray(Allocator.TempJob);
 
         var firstStation = railEntities[0];
+        var stationCount = 0;
 
         for (int i = 0, length = railEntities.Length; i < length; ++i)
         {
             var railComponent = EntityManager.GetComponentData<RailComponent>(railEntities[i]);
             if(railComponent.Type == RailMarkerType.PLATFORM_START)
             {
-                firstStation = railEntities[i];
-                break;
+                if(stationIndex == stationCount)
+                {
+                    firstStation = railEntities[i];
+                    break;
+                }
+                stationCount++;
             }
         }
 
