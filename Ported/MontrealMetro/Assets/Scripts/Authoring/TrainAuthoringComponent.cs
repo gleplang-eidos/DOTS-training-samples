@@ -25,6 +25,9 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
     [SerializeField]
     GameObject platform;
 
+    [SerializeField]
+    float WagonOffset = 5.25f;
+
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         // Get all the children
@@ -44,6 +47,7 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
             Doors = doors,
             Speed = Speed,
             LineColor = LineColor,
+            WagonOffset = WagonOffset
             //Platform = platformEntity,
         };
 
