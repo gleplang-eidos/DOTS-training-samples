@@ -113,6 +113,24 @@ public class WagonMovementSystem : JobComponentSystem
 
                 railEntities.Dispose();
 
+
+
+
+
+
+
+                var firstPosition = EntityManager.GetComponentData<Translation>(destination.Target);
+
+                var direction = math.normalize(firstPosition.Value - localToWorlds[entity].Position);
+                
+                rotation.Value = quaternion.LookRotation(direction, new float3(0, 1, 0));
+
+                translation.Value = firstPosition.Value;
+
+                EntityManager.SetComponentData(entity, translation);
+
+                EntityManager.SetComponentData(entity, rotation);
+
                 FindNextDestination(entity, ref destination, localToWorlds, train, ref translation, ref rotation, m_GreenLineQuery);
             }
         }).Run();
