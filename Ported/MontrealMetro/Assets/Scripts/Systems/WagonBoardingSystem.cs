@@ -10,7 +10,6 @@ public class WagonBoardingSystem : JobComponentSystem
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         var ecb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>().CreateCommandBuffer();
-
         Entities
             .WithoutBurst()
             .ForEach((Entity entity, ref Translation translation, ref CommuterComponent commuterComponent, ref CommuterWagonComponent commuterWagonComponent) =>
@@ -29,6 +28,14 @@ public class WagonBoardingSystem : JobComponentSystem
                     {
                         commuterComponent.targetPosition = commuterWagonComponent.SeatPosition;
                         commuterComponent.isAtTargetPosition = false;
+                    }
+
+                    if (commuterComponent.isAtTargetPosition &&
+                       commuterComponent.targetPosition.Equals(commuterWagonComponent.SeatPosition))
+                    {
+                        ecb.AddComponent(entity, new Parent() { Value = commuterWagonComponent.Wagon });
+                        ecb.AddComponent<LocalToParent>(entity);
+                        ecb.SetComponent(entity, new Translation());
                     }
                 }
                 else
