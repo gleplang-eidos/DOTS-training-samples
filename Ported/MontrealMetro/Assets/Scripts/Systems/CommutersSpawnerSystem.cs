@@ -5,27 +5,34 @@ using Unity.Transforms;
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 public class CommutersSpawnerSystem : JobComponentSystem
 {
+    int frameCount;
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        Entities.WithStructuralChanges().ForEach((Entity e, ref LocalToWorld localToWorld, ref CommuterSpawnPointComponent commuterSpawnerComponent) =>
+        if (++frameCount == 5)
         {
-            for (int i = 0; i < commuterSpawnerComponent.NbCommutersToSpawn; i++)
+            Entities.WithStructuralChanges().ForEach((Entity e, ref LocalToWorld localToWorld, ref CommuterSpawnPointComponent commuterSpawnerComponent) =>
             {
-                var commuter = EntityManager.Instantiate(commuterSpawnerComponent.CommuterPrefab);
-                EntityManager.SetComponentData(commuter, new Translation { Value = localToWorld.Position });
-                EntityManager.AddComponentData(commuter, new CommuterComponent
+                UnityEngine.Debug.Log($"SP position: {localToWorld.Position}");
+                for (int i = 0; i < commuterSpawnerComponent.NbCommutersToSpawn; i++)
                 {
-                    isAtTargetPosition = true,
-                    targetPosition = localToWorld.Position,
-                    speed = 2,
-                });
+                    var commuter = EntityManager.Instantiate(commuterSpawnerComponent.CommuterPrefab);
+                    EntityManager.SetComponentData(commuter, new Translation { Value = localToWorld.Position });
+                    EntityManager.AddComponentData(commuter, new CommuterComponent
+                    {
+                        isAtTargetPosition = true,
+                        targetPosition = localToWorld.Position,
+                        speed = 2,
+                    });
 
-                EntityManager.AddComponentData(commuter, new CommuterPlatformComponent { PlatformEntity = commuterSpawnerComponent.Platform });
-                EntityManager.AddComponentData(commuter, new UnassignedCommuterTag { });
-            }
+                    EntityManager.AddComponentData(commuter, new CommuterPlatformComponent { PlatformEntity = commuterSpawnerComponent.Platform });
+                    EntityManager.AddComponentData(commuter, new UnassignedCommuterTag { });
+                }
 
-            EntityManager.DestroyEntity(e);
-        }).Run();
+                EntityManager.DestroyEntity(e);
+            }).Run();
+            Enabled = false;
+        }
+        
         return default;
     }
 }

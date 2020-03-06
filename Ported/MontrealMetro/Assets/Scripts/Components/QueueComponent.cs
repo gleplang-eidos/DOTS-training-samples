@@ -8,9 +8,7 @@ using UnityEngine;
 [Serializable]
 public struct QueueComponent : IComponentData
 {
-    public float3 Position;
     public float PositioningOffset;
-    
 } 
 
 

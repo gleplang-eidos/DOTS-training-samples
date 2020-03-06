@@ -34,7 +34,7 @@ public class QueueSystem : JobComponentSystem
                     queueIndex = commuters.Add(new CommuterBufferElementData { entity = entity } );
                 }
 
-                commuterComponent.targetPosition = queueComponent.Position + (-queueTransform.Forward * (queueIndex * queueComponent.PositioningOffset));
+                commuterComponent.targetPosition = EntityManager.GetComponentData<LocalToWorld>(commuterQueueComponent.Queue).Position + (-queueTransform.Forward * (queueIndex * queueComponent.PositioningOffset));
                 commuterComponent.isAtTargetPosition = false;
             }
         ).Run();
