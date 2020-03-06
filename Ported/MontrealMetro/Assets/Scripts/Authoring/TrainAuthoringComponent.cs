@@ -47,9 +47,11 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
             Doors = doors,
             Speed = Speed,
             LineColor = LineColor,
-            WagonOffset = WagonOffset
-            //Platform = platformEntity,
+            WagonOffset = WagonOffset,
+            HeadWagon = conversionSystem.GetPrimaryEntity(children[children.Length - 1])
         };
+
+        dstManager.AddComponent<HeadWagonTag>(conversionSystem.GetPrimaryEntity(children[children.Length - 1]));
 
         // Fill the list of wagon as well as assigning the shared component to every wagon.
         //foreach (var childTransform in children)

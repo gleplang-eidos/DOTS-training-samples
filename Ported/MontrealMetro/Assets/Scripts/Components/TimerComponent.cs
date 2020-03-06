@@ -2,5 +2,5 @@
 
 public struct TimerComponent : IComponentData
 {
-    public float Time;
+    public float TimerVariable;
 }

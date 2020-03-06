@@ -4,7 +4,6 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-[UpdateAfter(typeof(AssignQueueSystem))]
 public class QueueSystem : JobComponentSystem
 {
     protected override JobHandle OnUpdate(JobHandle inputDeps)
