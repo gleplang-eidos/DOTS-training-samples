@@ -31,8 +31,8 @@ public class WagonAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         {
             WagonIndex = WagonIndex,
             Seats = fixedList,
-            LeftEntryPosition = leftEntryPosition.position,
-            RightEntryPosition = rightEntryPosition.position
+            LeftEntryEntity = conversionSystem.GetPrimaryEntity(leftEntryPosition.gameObject),
+            RightEntryEntity = conversionSystem.GetPrimaryEntity(rightEntryPosition.gameObject)
         });
     }
 

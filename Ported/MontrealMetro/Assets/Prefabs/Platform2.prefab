@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab4fa6d1b77c0424fa2965f7b2e25d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DockedTime: 3
+  DockedTime: 10
   Queues:
   - {fileID: 7442061077434926517}
   - {fileID: 1470719980331250621}
