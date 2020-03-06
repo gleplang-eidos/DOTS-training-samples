@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
+public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
     [SerializeField]
     [HideInInspector]
@@ -20,10 +20,10 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
     float Speed = 0.002f;
 
     [SerializeField]
-    float WagonOffset = 2.0f;
+    List<GameObject> Doors = new List<GameObject>();
 
     [SerializeField]
-    List<GameObject> Doors = new List<GameObject>();
+    GameObject platform;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -36,15 +36,17 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
             doors.Add(conversionSystem.GetPrimaryEntity(door));
         }
 
+        //var platformEntity = conversionSystem.GetPrimaryEntity(platform);
         // Create the shared component
-        var train = new TrainComponent {
+        var train = new TrainComponent
+        {
             Wagons = new FixedList128<Entity>(),
             Doors = doors,
             Speed = Speed,
             LineColor = LineColor,
-            WagonOffset = WagonOffset
+            //Platform = platformEntity,
         };
- 
+
         // Fill the list of wagon as well as assigning the shared component to every wagon.
         //foreach (var childTransform in children)
         //{
@@ -63,6 +65,7 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         foreach (var childTransform in children)
         {
             var wagonEntity = conversionSystem.GetPrimaryEntity(childTransform.gameObject);
+
             dstManager.AddSharedComponentData(wagonEntity, train);
             dstManager.AddComponentData(wagonEntity, new DestinationComponent { /*Target = destinationEntity*/ });
             dstManager.RemoveComponent<LocalToParent>(wagonEntity);
@@ -70,7 +73,7 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
             dstManager.SetComponentData(wagonEntity, new Translation { Value = childTransform.transform.position });
             dstManager.SetComponentData(wagonEntity, new Rotation { Value = childTransform.transform.rotation });
 
-            if(railMarker != null)
+            if (railMarker != null)
             {
                 switch (railMarker.LineColor)
                 {
@@ -91,5 +94,10 @@ public class TrainAuthoringComponent : MonoBehaviour, IConvertGameObjectToEntity
         }
 
         dstManager.DestroyEntity(entity);
+    }
+
+    public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
+    {
+        referencedPrefabs.Add(platform);
     }
 }
